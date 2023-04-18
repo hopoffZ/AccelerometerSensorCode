@@ -37,9 +37,11 @@ void setup() {
     #ifdef DEBUG_MODE
     Serial.println("Accelerometer not detected. Check address jumper and wiring. Freezing...");
     #endif
-    while (1)
-      ;
+    bool f = true;
+    while (f)
+      f = accel.begin(); //loop until success
   }
+  accel.setDataRate(LIS2DH12_ODR_5kHz376_LP_1kHz344_NM_HP);
   delay(500);
 #ifndef DEBUG_MODE
   if (!adin1110.begin(deviceMAC, LED_BUILTIN, InterruptPin, ResetPin, ChipSelPin)) {
@@ -77,10 +79,7 @@ void collectData() {
   for (int i = 0; i < samples; i++) {
     if (accel.available())
   {
-    float accelX = accel.getX();
-    float accelY = accel.getY();
-    float accelZ = accel.getZ();
-
+    vReal[i] = accel.getZ();
     #ifdef DEBUG_MODE
     Serial.print("Acc [mg]: ");
     Serial.print(accelX, 1);
